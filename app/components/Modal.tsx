@@ -8,18 +8,25 @@ type ModalProps = {
   transcriptName: string;
 };
 
+// Declare SpeechRecognition as a global variable
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+  }
+}
+
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onStartTranscription, transcriptName }) => {
   const [name, setName] = useState('');
   const [transcription, setTranscription] = useState('');
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (!('webkitSpeechRecognition' in window)) {
+    if (!('SpeechRecognition' in window)) {
       alert('Your browser does not support speech recognition.');
       return;
     }
 
-    const recognition = new webkitSpeechRecognition();
+    const recognition = new window.SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
